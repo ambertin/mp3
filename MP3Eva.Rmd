@@ -1,0 +1,47 @@
+---
+title: "MP3"
+output: html_document
+---
+
+```{r message=FALSE}
+library(mdsr)
+library(tidyverse)
+library(RMySQL)
+db <-dbConnect_scidb(dbname = "imdb")
+class(db)
+```
+REMAKES 
+```{r}
+remakes <- db %>% 
+  dbGetQuery("SELECT ml.movie_id, 
+ml.linked_movie_id, 
+link_type_id, 
+t2.title AS remake, 
+t.title AS original, 
+t2.production_year AS remake_year,
+t.production_year AS original_year,
+(t2.production_year - t.production_year ) AS years_between
+FROM movie_link AS ml
+JOIN title AS t ON t.id = ml.movie_id
+JOIN title AS t2 ON t2.id = ml.linked_movie_id
+WHERE ml.link_type_id =  4
+AND t.kind_id = 1
+AND t2.kind_id = 1")
+```
+
+```{r}
+avg_length <- remakes %>%
+  group_by(remake_year) %>%
+  summarize(avg_gap = mean(years_between))
+
+```
+
+```{r}
+gap_of_remakes <- ggplot(remakes, aes(x= remake_year, y= years_between)) + geom_point(alpha= .5)
+gap_of_remakes
+
+
+avg_gap <- ggplot(avg_length, aes(x=remake_year, y= avg_gap)) + geom_area()
+avg_gap
+```
+
