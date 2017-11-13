@@ -45,3 +45,37 @@ avg_gap <- ggplot(avg_length, aes(x=remake_year, y= avg_gap)) + geom_area()
 avg_gap
 ```
 
+
+Audrey's Query & Data:
+
+
+```{r}
+
+remakes_reboots_sequels <- db %>%
+  dbGetQuery(
+    "SELECT kw.id, kw.keyword, t.title, t.production_year 
+    FROM imdb.keyword kw
+    JOIN movie_keyword mkw 
+    ON kw.id = mkw.keyword_id
+    JOIN title t
+    ON t.id = mkw.movie_id
+    WHERE kw.id IN (82, 1134, 20757) AND t.kind_id = 1;"
+  )
+
+remakes_by_year <- remakes_reboots_sequels %>%
+  filter(!is.na(production_year)) %>%
+  group_by(production_year) %>%
+  summarize(
+    reboot = sum(keyword == "reboot"),
+    remake = sum(keyword == "remake"),
+    sequel = sum(keyword == "sequel"))
+
+remakes_by_year_gathered <- remakes_by_year %>%
+  gather(key = "type", value = "count", reboot:sequel)
+
+
+
+
+```
+
+
