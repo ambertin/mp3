@@ -1,16 +1,19 @@
 ---
-title: "MP3"
+title: "MP3 - Sequels w/ SQL"
 author: Audrey Bertin & Eva Gerstle
 output: html_document
 ---
 
 ```{r, message = FALSE, warning = FALSE}
+
 library(mdsr)
 library(tidyverse)
 library(RMySQL)
 db <-dbConnect_scidb(dbname = "imdb")
 
 ```
+
+
 REMAKES 
 ```{r}
 
@@ -181,4 +184,7 @@ plot +
 
 ```
 
+
+
+The GitHub repository we used is linked [here](https://github.com/ambertin/mp3.git)
 
