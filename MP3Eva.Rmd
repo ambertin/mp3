@@ -85,6 +85,25 @@ remakes_by_year_gathered <- remakes_by_year %>%
 
 ```
 
+### Function: most of each type made in any single year
+```{r}
+most_in_year <- function(movie_type) {
+  
+  remakes_reboots_sequels %>%
+  filter(keyword == movie_type, !is.na(production_year)) %>%
+  group_by(production_year, keyword) %>%
+  summarize(N = n()) %>%
+  arrange(desc(N)) %>%
+  head(1)
+  
+}
+
+list <- c("reboot", "remake", "sequel")
+top_year_by_type <- lapply(list, FUN = most_in_year) %>% bind_rows()
+
+```
+
+
 ### Graph the numbers of remakes, reboots, and sequels over time
 
 ```{r}
