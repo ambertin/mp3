@@ -1,5 +1,6 @@
 ---
 title: "MP3"
+author: Audrey Bertin & Eva Gerstle
 output: html_document
 ---
 
@@ -8,28 +9,32 @@ library(mdsr)
 library(tidyverse)
 library(RMySQL)
 db <-dbConnect_scidb(dbname = "imdb")
-class(db)
+
 ```
 REMAKES 
 ```{r}
+
 remakes <- db %>% 
-  dbGetQuery("SELECT ml.movie_id, 
-ml.linked_movie_id, 
-link_type_id, 
-t2.title AS remake, 
-t.title AS original, 
-t2.production_year AS remake_year,
-t.production_year AS original_year,
-(t2.production_year - t.production_year ) AS years_between
-FROM movie_link AS ml
-JOIN title AS t ON t.id = ml.movie_id
-JOIN title AS t2 ON t2.id = ml.linked_movie_id
-WHERE ml.link_type_id =  4
-AND t.kind_id = 1
-AND t2.kind_id = 1")
+  dbGetQuery(
+    "SELECT ml.movie_id, 
+    ml.linked_movie_id, 
+    link_type_id, 
+    t2.title AS remake, 
+    t.title AS original, 
+    t2.production_year AS remake_year,
+    t.production_year AS original_year,
+    (t2.production_year - t.production_year ) AS years_between
+    FROM movie_link AS ml
+    JOIN title AS t ON t.id = ml.movie_id
+    JOIN title AS t2 ON t2.id = ml.linked_movie_id
+    WHERE ml.link_type_id =  4
+    AND t.kind_id = 1
+    AND t2.kind_id = 1")
+
 ```
 
 ```{r}
+
 avg_length <- remakes %>%
   group_by(remake_year) %>%
   summarize(avg_gap = mean(years_between))
@@ -46,20 +51,23 @@ avg_gap
 ```
 
 
-Audrey's Query & Data:
-
+### Find information about the number of reboots, remakes, and sequels for each year
 
 ```{r}
 
 remakes_reboots_sequels <- db %>%
   dbGetQuery(
     "SELECT kw.id, kw.keyword, t.title, t.production_year 
-    FROM imdb.keyword kw
-    JOIN movie_keyword mkw 
-    ON kw.id = mkw.keyword_id
-    JOIN title t
-    ON t.id = mkw.movie_id
-    WHERE kw.id IN (82, 1134, 20757) AND t.kind_id = 1;"
+     FROM imdb.keyword kw
+     JOIN movie_keyword mkw 
+     ON kw.id = mkw.keyword_id
+     JOIN title t
+     ON t.id = mkw.movie_id
+     WHERE kw.id IN (82, 1134, 20757) AND t.kind_id = 1;"
+    
+    # 82, 1134, and 20757 are the keyword id numbers that correspond to the      keywords remake, reboot, and sequel.
+    
+    #This query is optimized because we use the primary keys in the keyword      and title tables to join. When we use "where" to select the IDs from         title and keyword, SQL only has to look at 1 and 3 rows, respectively. On     movie keyword, keyword id is indexed, so we only have to look at 32 rows     when referencing that table! Therefore, this query is extremely fast.
   )
 
 remakes_by_year <- remakes_reboots_sequels %>%
@@ -77,5 +85,4 @@ remakes_by_year_gathered <- remakes_by_year %>%
 
 
 ```
-
 
