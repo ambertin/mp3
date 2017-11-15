@@ -11,7 +11,7 @@ library(RMySQL)
 db <-dbConnect_scidb(dbname = "imdb")
 
 ```
-REMAKES 
+### SQL Queries to find the number of years between a movie and it's remake/sequel
 ```{r}
 
 remakes <- db %>% 
@@ -30,24 +30,42 @@ remakes <- db %>%
     WHERE ml.link_type_id =  4
     AND t.kind_id = 1
     AND t2.kind_id = 1")
+sequels <- db %>%
+  dbGetQuery(
+    "SELECT t2.title AS sequel, 
+    t.title AS original, 
+    t2.production_year AS sequel_year,
+    t.production_year AS original_year,
+    (t2.production_year - t.production_year ) AS years_between
+    FROM movie_link AS ml
+    JOIN title AS t ON t.id = ml.movie_id
+    JOIN title AS t2 ON t2.id = ml.linked_movie_id
+    WHERE ml.link_type_id =  2
+    AND t.kind_id = 1
+    AND t2.kind_id = 1")
+
 
 ```
-
+### Finding the average number of years between an original and it's sequel/remake for each year
 ```{r}
 
 avg_length <- remakes %>%
   group_by(remake_year) %>%
   summarize(avg_gap = mean(years_between))
 
+avg_length_sequels <- sequels %>%
+  group_by(sequel_year) %>%
+  summarize(avg_gap = mean(years_between))
+
 ```
-
+### Graphing the average gap between sequels/remakes  and originals for each year 
 ```{r}
-gap_of_remakes <- ggplot(remakes, aes(x= remake_year, y= years_between)) + geom_point(alpha= .5)
-gap_of_remakes
 
+avg_gap_sequels <- ggplot(avg_length_sequels, aes(x=sequel_year, y= avg_gap)) + geom_area() + scale_x_continuous(name='Year of Sequel', breaks = c(1880, 1890, 1900, 1910, 1920,1930, 1940, 1950, 1960,1970,1980,1990,2000,2010,2020), labels = c("1880", "1890", "1900", "1910","1920","1930","1940","1950","1960","1970","1980","1990","2000","2010","2020")) + scale_y_continuous(name ='Average years between Original and Sequel') 
+avg_gap_sequels
 
-avg_gap <- ggplot(avg_length, aes(x=remake_year, y= avg_gap)) + geom_area()
-avg_gap
+avg_gap_remakes <- ggplot(avg_length, aes(x=remake_year, y= avg_gap)) + geom_area() + scale_x_continuous(name='Year of Remake', breaks = c(1880, 1890, 1900, 1910, 1920,1930, 1940, 1950, 1960,1970,1980,1990,2000,2010,2020), labels = c("1880", "1890", "1900", "1910","1920","1930","1940","1950","1960","1970","1980","1990","2000","2010","2020")) + scale_y_continuous(name ='Average years between Original and Remake') 
+avg_gap_remakes
 ```
 
 
