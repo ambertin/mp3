@@ -227,6 +227,12 @@ The most recent large spike in sequels appears to be related to the rise in supe
 
 Reboots appear to be made on a much smaller scale than either sequels or remakes, with movies classified as "reboot" on IMDb only appearing within the last few years. Due to this recent increase in reboots, it is certainly possible that there will be a rise in that type of movie in the coming years.
 
+_______________________________________________________________________________________
+
+While this graph appears to show the trends in sequels, remakes, and reboots being generally positive over time, it is possible that some of these trends are not entirely true. In order to calculate the number of each type of movie, films using they keywords "sequel", "remake" and "reboot" were pulled from IMDb. Some films are linked with multiple of these keywords, and there is not always a single agreed-upon definition for when something is a remake vs. a reboot or a reboot vs. a sequel. Therefore, movies could be counted in multiple categories, or counted in the wrong category, or accidentally not counted in any category at all, which might be affecting the data. This looks to be particularly true for reboots, since the most in any year was 5 in 2017, and there were none before around 2006. Considering how many movies existed before 2006 that could have been rebooted, the numbers for reboots look a bit low, as if some movies are being missed (for instance, Godzilla has been remade many times, including before 2006, and so has The Mummy, but that is not shown on the plot). Considering that we do not know how these classification errors specifically altered the data, it is hard to form an alternative idea of what the movie trends looked like, but it is certainly possible that they were different than what is shown on the graph. 
+
+Additionally, it is possible that the historical events that lined up with the spikes/shifts in the graph may be coincidental or only a small part of the story. The release of Spiderman and the growth of the superhero movie industry cannot likely explain the recent rise in sequels all by itself, since there were not enough superhero movies in each year to explain the significant increase in sequels. These events just appeared to have an effect on the movie industry, but might not have been significant causes of changes in trends.
+
 
 
 The GitHub repository we used is linked [here](https://github.com/ambertin/mp3.git)
