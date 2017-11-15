@@ -14,10 +14,9 @@ db <-dbConnect_scidb(dbname = "imdb")
 ```
 
 In this project, we were looking to study movie sequels, remakes, and reboots throughout history. Our goal was to determine: 
-  1) Whether there are more of these movies now than in the past
-  2) Whether the number of years between sequels and their originals is changing, and 
+  1) Whether the number of years between sequels and their originals is changing, and 
   if so, whether they're getting further apart or closer together.
-
+  2) Whether there are more of these movies now than in the past
 
 
 ### SQL Queries to find the number of years between a movie and it's remake/sequel
@@ -54,7 +53,7 @@ sequels <- db %>%
     AND t.kind_id = 1
     AND t2.kind_id = 1")
 
-
+#These queries both join twice on the primary key which is a very quick opperation. Due to the selecting of specific columns, SQL is further optimized. The remake query is much faster due to there being less remakes than sequels.  
 ```
 ### Finding the average number of years between an original and it's sequel/remake for each year
 ```{r}
@@ -71,15 +70,16 @@ avg_length_sequels <- sequels %>%
 ### Graphing the average gap between sequels/remakes  and originals for each year 
 
 ```{r, warning = FALSE}
-gap_of_remakes <- ggplot(remakes, aes(x= remake_year, y= years_between)) + geom_point(alpha= .5)
-gap_of_remakes
 
-avg_gap_sequels <- ggplot(avg_length_sequels, aes(x=sequel_year, y= avg_gap)) + geom_area() + scale_x_continuous(name='Year of Sequel', breaks = c(1880, 1890, 1900, 1910, 1920,1930, 1940, 1950, 1960,1970,1980,1990,2000,2010,2020), labels = c("1880", "1890", "1900", "1910","1920","1930","1940","1950","1960","1970","1980","1990","2000","2010","2020")) + scale_y_continuous(name ='Average years between Original and Sequel') 
+avg_gap_sequels <- ggplot(avg_length_sequels, aes(x=sequel_year, y= avg_gap)) + geom_area(fill = "#e41a1c", alpha = 0.6) + scale_x_continuous(name='Year of Sequel', breaks = c(1900, 1910, 1920,1930, 1940, 1950, 1960,1970,1980,1990,2000,2010,2020), labels = c("1900", "1910","1920","1930","1940","1950","1960","1970","1980","1990","2000","2010","2020")) + scale_y_continuous(name ='Average years between Original and Sequel', limits = c(0,60)) + ggtitle("Spacing between Movies and their Sequels") 
 avg_gap_sequels
 
-avg_gap_remakes <- ggplot(avg_length, aes(x=remake_year, y= avg_gap)) + geom_area() + scale_x_continuous(name='Year of Remake', breaks = c(1880, 1890, 1900, 1910, 1920,1930, 1940, 1950, 1960,1970,1980,1990,2000,2010,2020), labels = c("1880", "1890", "1900", "1910","1920","1930","1940","1950","1960","1970","1980","1990","2000","2010","2020")) + scale_y_continuous(name ='Average years between Original and Remake') 
+avg_gap_remakes <- ggplot(avg_length, aes(x=remake_year, y= avg_gap)) + geom_area(fill = "#377eb8", alpha = 0.6) + scale_x_continuous(name='Year of Remake', breaks = c(1900, 1910, 1920,1930, 1940, 1950, 1960,1970,1980,1990,2000,2010,2020), labels = c( "1900", "1910","1920","1930","1940","1950","1960","1970","1980","1990","2000","2010","2020")) + scale_y_continuous(name ='Average years between Original and Remake') + ggtitle("Spacing between Movies and their Remakes") 
 avg_gap_remakes
 ```
+In both graphes we clearly see an upward trend, indicating the average length of time (for each year remakes and sequels were made) between a movie being produced and its sequel/remake has increased. This supports our prior assumptions, due to the fact that more time has occured since the first movies so there are more movies from longer ago to make a sequel or remake of. 
+Our c
+In addition we see large spikes in both graphes around 2020, so be on the watch for upcoming remakes and sequels made from older movies. 
 
 
 ### Find information about the number of reboots, remakes, and sequels for each year
@@ -135,7 +135,6 @@ list <- c("reboot", "remake", "sequel")
 top_year_by_type <- lapply(list, FUN = most_in_year) %>% bind_rows()
 
 ```
-
 
 
 ### Graph the numbers of remakes, reboots, and sequels over time
@@ -212,8 +211,6 @@ plot +
   geom_point(data = top_year_by_type, aes(x = production_year, y = N), shape = 21, size = 1, fill = "white", color = "black") # Plot top years for each type of movie as dots on the plot
 
 ```
-
-
 Above is a graph of the numbers of remakes, reboots, and sequels from 1895 to 2025. A solid vertical line is placed on the year 2017. All movies after that line have not been completed or released, and are just scheduled to be. Therefore, it is possible that those numbers will not be entirely accurate if film release dates are changed, or if any films are cancelled for some reason.
 
 As we can see from the graph above, there *has* been an overall increase in all three types of movies over time, though only reboots are at their highest point in history right now. Both sequels and remakes have had higher peaks than they do now at earlier points in history (sequels peaked in 1994, and remakes in 1941). 
