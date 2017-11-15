@@ -78,7 +78,11 @@ avg_gap_remakes <- ggplot(avg_length, aes(x=remake_year, y= avg_gap)) + geom_are
 avg_gap_remakes
 ```
 In both graphes we clearly see an upward trend, indicating the average length of time (for each year remakes and sequels were made) between a movie being produced and its sequel/remake has increased. This supports our prior assumptions, due to the fact that more time has occured since the first movies so there are more movies from longer ago to make a sequel or remake of. 
-Our c
+
+Our graphes show that on average, across all the years, less time occurs between an original and its sequel than an original and its remake. This could be due to the impatiance of many movie-viewers desiring a sequel soon after the original. But remakes are not sequentially linked to the orginal movie so time in between the original and remake could be longer. An alternative hypothesis for the average longer time between an original and remake could be due to the viewers not wanting to see a remake of a movie that was just produced. Perhaps, it is customary to give an original movie a large amount time before remaking it.
+
+It is important to note, that due to IMDb not having informamtion in their "link_type" datatable specific to reboots, there are only sequels and remakes are shown in these graphes. There is the possiblity that IMDb's term "followed by", which I used as the sequel linking term, also includes reboots, so the movie reboots data may have been included in the sequels graph.  
+
 In addition we see large spikes in both graphes around 2020, so be on the watch for upcoming remakes and sequels made from older movies. 
 
 
