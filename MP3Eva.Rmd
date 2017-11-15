@@ -12,6 +12,14 @@ library(RMySQL)
 db <-dbConnect_scidb(dbname = "imdb")
 
 ```
+
+In this project, we were looking to study movie sequels, remakes, and reboots throughout history. Our goal was to determine: 
+  1) Whether there are more of these movies now than in the past
+  2) Whether the number of years between sequels and their originals is changing, and 
+  if so, whether they're getting further apart or closer together.
+
+
+
 ### SQL Queries to find the number of years between a movie and it's remake/sequel
 
 ```{r}
@@ -129,6 +137,7 @@ top_year_by_type <- lapply(list, FUN = most_in_year) %>% bind_rows()
 ```
 
 
+
 ### Graph the numbers of remakes, reboots, and sequels over time
 
 ```{r, warning = FALSE}
@@ -203,6 +212,19 @@ plot +
   geom_point(data = top_year_by_type, aes(x = production_year, y = N), shape = 21, size = 1, fill = "white", color = "black") # Plot top years for each type of movie as dots on the plot
 
 ```
+
+
+Above is a graph of the numbers of remakes, reboots, and sequels from 1895 to 2025. A solid vertical line is placed on the year 2017. All movies after that line have not been completed or released, and are just scheduled to be. Therefore, it is possible that those numbers will not be entirely accurate if film release dates are changed, or if any films are cancelled for some reason.
+
+As we can see from the graph above, there *has* been an overall increase in all three types of movies over time, though only reboots are at their highest point in history right now. Both sequels and remakes have had higher peaks than they do now at earlier points in history (sequels peaked in 1994, and remakes in 1941). 
+
+Certain historical events have affected the number of remakes, reboots, and sequels made, and several important ones are shown on the graph. The first large spike in movie remakes happened after 1927, when the first movies were made with sound. The addition of sound inspired filmmakers to remake many silent films from the past.
+
+Then, there was a decrease in all types of films after 1948, when the supreme court case *United States v. Paramount Pictures, Inc.* resulted in the breakup of the studio system, as the court decided that the studios were in violation of US antitrust laws. When these studios were shut down, fewer movies overall were made, until the movie industry was able to regroup again and start producing more films, as seen by the later increase in sequels starting in the 1960s. 
+
+The most recent large spike in sequels appears to be related to the rise in superhero movies. After Spiderman was released in 2002, there has been a massive boom of superhero franchises. Marvel and D.C. have put out huge numbers of movies featuring Batman, Ironman, Superman, Captain America, The Avengers, etc. Many of these are sequels in massive franchises, and as the public has grown to love these sequels, more and more are being made, so we are once again at a relatively high point in sequel production.
+
+Reboots appear to be made on a much smaller scale than either sequels or remakes, with movies classified as "reboot" on IMDb only appearing within the last few years. Due to this recent increase in reboots, it is certainly possible that there will be a rise in that type of movie in the coming years.
 
 
 
