@@ -14,9 +14,10 @@ db <-dbConnect_scidb(dbname = "imdb")
 ```
 
 In this project, we were looking to study movie sequels, remakes, and reboots throughout history. Our goal was to determine: 
-  1) Whether the number of years between sequels and their originals is changing, and 
-  if so, whether they're getting further apart or closer together.
-  2) Whether there are more of these movies now than in the past, and how the numbers    have changed over time.
+
+  1. Whether the number of years between sequels and their originals is changing, and if so, whether they're getting further apart or closer together.
+  
+  2. Whether there are more of these movies now than in the past, and how the numbers have changed over time.
 
 
 ### SQL Queries to find the number of years between a movie and its remake/sequel
@@ -95,7 +96,8 @@ avg_gap_remakes <- ggplot(avg_length, aes(x=remake_year, y= avg_gap)) +
 geom_area(fill = "#377eb8", alpha = 0.6) + 
   scale_x_continuous(
     name='Year of Remake',
-    breaks = c(1900, 1910, 1920,1930, 1940, 1950, 1960,1970,1980,1990,2000,2010,2020),     labels = c( "1900","1910","1920","1930","1940","1950","1960","1970","1980","1990","2000","2010","2020")) +
+    breaks = c(1900, 1910, 1920,1930, 1940, 1950, 1960,1970,1980,1990,2000,2010,2020),    
+    labels = c( "1900","1910","1920","1930","1940","1950","1960","1970","1980","1990","2000","2010","2020")) +
 scale_y_continuous(name ='Average years between Original and Remake') + 
 ggtitle("Spacing between Movies and their Remakes") 
 
