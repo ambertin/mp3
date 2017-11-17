@@ -16,10 +16,10 @@ db <-dbConnect_scidb(dbname = "imdb")
 In this project, we were looking to study movie sequels, remakes, and reboots throughout history. Our goal was to determine: 
   1) Whether the number of years between sequels and their originals is changing, and 
   if so, whether they're getting further apart or closer together.
-  2) Whether there are more of these movies now than in the past
+  2) Whether there are more of these movies now than in the past, and how the numbers    have changed over time.
 
 
-### SQL Queries to find the number of years between a movie and it's remake/sequel
+### SQL Queries to find the number of years between a movie and its remake/sequel
 
 ```{r}
 
@@ -56,6 +56,8 @@ sequels <- db %>%
     AND t2.kind_id = 1")
 
 #These queries both join twice on the primary key which is a very quick opperation. Due to the selecting of specific columns, SQL is further optimized. The remake query is much faster due to there being less remakes than sequels.  
+
+#Note that in movie_link there was no category for reboots, so they are not included here.
 ```
 
 
@@ -82,29 +84,29 @@ scale_x_continuous(
   name='Year of Sequel',
   breaks = c(1900, 1910, 1920,1930, 1940, 1950, 1960,1970,1980,1990,2000,2010,2020),
   labels = c("1900", "1910","1920","1930","1940","1950","1960","1970","1980","1990","2000","2010","2020")) + 
-  scale_y_continuous(
-    name ='Average years between Original and Sequel', 
-    limits = c(0,60)) + 
-  ggtitle("Spacing between Movies and their Sequels") 
+scale_y_continuous(
+  name ='Average years between Original and Sequel', 
+  limits = c(0,60)) + 
+ggtitle("Spacing between Movies and their Sequels") 
 
 avg_gap_sequels
 
 avg_gap_remakes <- ggplot(avg_length, aes(x=remake_year, y= avg_gap)) +
-  geom_area(fill = "#377eb8", alpha = 0.6) + 
+geom_area(fill = "#377eb8", alpha = 0.6) + 
   scale_x_continuous(
     name='Year of Remake',
     breaks = c(1900, 1910, 1920,1930, 1940, 1950, 1960,1970,1980,1990,2000,2010,2020),     labels = c( "1900","1910","1920","1930","1940","1950","1960","1970","1980","1990","2000","2010","2020")) +
-  scale_y_continuous(name ='Average years between Original and Remake') + 
-  ggtitle("Spacing between Movies and their Remakes") 
+scale_y_continuous(name ='Average years between Original and Remake') + 
+ggtitle("Spacing between Movies and their Remakes") 
 
 avg_gap_remakes
 ```
 
-In both graphes we clearly see an upward trend, indicating the average length of time (for each year remakes and sequels were made) between a movie being produced and its sequel/remake has increased. This supports our prior assumptions, due to the fact that more time has occured since the first movies so there are more movies from longer ago to make a sequel or remake of. 
+In both graphs we clearly see an upward trend, indicating the average length of time (for each year remakes and sequels were made) between a movie being produced and its sequel/remake has increased. This supports our prior assumptions, due to the fact that more time has occured since the first movies so there are more movies from longer ago to make a sequel or remake of. 
 
-Our graphes show that on average, across all the years, less time occurs between an original and its sequel than an original and its remake. This could be due to the impatiance of many movie-viewers desiring a sequel soon after the original. But remakes are not sequentially linked to the orginal movie so time in between the original and remake could be longer. An alternative hypothesis for the average longer time between an original and remake could be due to the viewers not wanting to see a remake of a movie that was just produced. Perhaps, it is customary to give an original movie a large amount time before remaking it.
+Our graphs show that on average, across all the years, less time occurs between an original and its sequel than an original and its remake. This could be due to the impatiance of many movie-viewers desiring a sequel soon after the original. Remakes are not sequentially linked to the orginal movie so time in between the original and remake could be longer. An alternative hypothesis for the average longer time between an original and remake could be due to the viewers not wanting to see a remake of a movie that was just produced. Perhaps, it is customary to give an original movie a large amount time before remaking it.
 
-It is important to note, that due to IMDb not having informamtion in their "link_type" datatable specific to reboots, there are only sequels and remakes are shown in these graphes. There is the possiblity that IMDb's term "followed by", which I used as the sequel linking term, also includes reboots, so the movie reboots data may have been included in the sequels graph.  
+It is important to note, that due to IMDb not having informamtion in their "link_type" datatable specific to reboots, there are only sequels and remakes are shown in these graphs. There is the possiblity that IMDb's term "followed by", which was used as the sequel linking term, also includes reboots, so the movie reboots data may have been included in the sequels graph.  
 
 In addition we see large spikes in both graphes around 2020, so be on the watch for upcoming remakes and sequels made from older movies. 
 
@@ -139,12 +141,15 @@ remakes_by_year <- remakes_reboots_sequels %>%
 remakes_by_year_gathered <- remakes_by_year %>%
   gather(key = "type", value = "count", reboot:sequel)
 
+#This code puts the information pulled from the query into a form that allows us to graph the information for sequels, remakes, and reboots all on one single graph.
 
+#Note that the movie_keyword table includes keywords for remake, sequel, AND reboot (unlike the link_type table), so here we can see reboots as well.
 
 ```
 
 ### Function: most of each type made in any single year
 ```{r}
+
 most_in_year <- function(movie_type) {
   
   remakes_reboots_sequels %>%
@@ -238,6 +243,7 @@ plot +
   geom_point(data = top_year_by_type, aes(x = production_year, y = N), shape = 21, size = 1, fill = "white", color = "black") # Plot top years for each type of movie as dots on the plot
 
 ```
+
 Above is a graph of the numbers of remakes, reboots, and sequels from 1895 to 2025. A solid vertical line is placed on the year 2017. All movies after that line have not been completed or released, and are just scheduled to be. Therefore, it is possible that those numbers will not be entirely accurate if film release dates are changed, or if any films are cancelled for some reason.
 
 As we can see from the graph above, there *has* been an overall increase in all three types of movies over time, though only reboots are at their highest point in history right now. Both sequels and remakes have had higher peaks than they do now at earlier points in history (sequels peaked in 1994, and remakes in 1941). 
@@ -249,12 +255,12 @@ Then, there was a decrease in all types of films after 1948, when the supreme co
 The most recent large spike in sequels appears to be related to the rise in superhero movies. After Spiderman was released in 2002, there has been a massive boom of superhero franchises. Marvel and D.C. have put out huge numbers of movies featuring Batman, Ironman, Superman, Captain America, The Avengers, etc. Many of these are sequels in massive franchises, and as the public has grown to love these sequels, more and more are being made, so we are once again at a relatively high point in sequel production.
 
 Reboots appear to be made on a much smaller scale than either sequels or remakes, with movies classified as "reboot" on IMDb only appearing within the last few years. Due to this recent increase in reboots, it is certainly possible that there will be a rise in that type of movie in the coming years.
-----------------------------------------------------------------------------------------
+
 While this graph appears to show the trends in sequels, remakes, and reboots being generally positive over time, it is possible that some of these trends are not entirely true. In order to calculate the number of each type of movie, films using they keywords "sequel", "remake" and "reboot" were pulled from IMDb. Some films are linked with multiple of these keywords, and there is not always a single agreed-upon definition for when something is a remake vs. a reboot or a reboot vs. a sequel. Therefore, movies could be counted in multiple categories, or counted in the wrong category, or accidentally not counted in any category at all, which might be affecting the data. This looks to be particularly true for reboots, since the most in any year was 5 in 2017, and there were none before around 2006. Considering how many movies existed before 2006 that could have been rebooted, the numbers for reboots look a bit low, as if some movies are being missed (for instance, Godzilla has been remade many times, including before 2006, and so has The Mummy, but that is not shown on the plot). Considering that we do not know how these classification errors specifically altered the data, it is hard to form an alternative idea of what the movie trends looked like, but it is certainly possible that they were different than what is shown on the graph. 
 
 Additionally, it is possible that the historical events that lined up with the spikes/shifts in the graph may be coincidental or only a small part of the story. The release of Spiderman and the growth of the superhero movie industry cannot likely explain the recent rise in sequels all by itself, since there were not enough superhero movies in each year to explain the significant increase in sequels. These events just appeared to have an effect on the movie industry, but might not have been significant causes of changes in trends.
 
 
 
-The GitHub repository we used is linked [here](https://github.com/ambertin/mp3.git)
+**The GitHub repository we used is linked [here](https://github.com/ambertin/mp3.git).**
 
